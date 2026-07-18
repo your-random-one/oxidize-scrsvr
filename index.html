@@ -270,8 +270,21 @@
         }
 
         function simulationStep() {
-            let randomIndex = Math.floor(Math.random() * chainLength);
-            spawnOxygenAttack(randomIndex);
+            let validTargets = [];
+            chainState.forEach((state,index)=> {
+                isTerminal = (index === 0 || index === chainLength-1);
+                if (isTerminal && state < 3) {
+                    validTargets.push(index);
+                } else if (!isTerminal && state < 2) {
+                    validTargets.push(index);
+                }
+                if (validTargets.length === 0) {
+                    handleFragmentation(chainLength - 1);
+                } else {
+                    let randomIndex = validTargets[Math.floor(Math.random() * validTargets.length)];
+                    spawnOxygenAttack(randomIndex);
+                }
+            });
         }
 
         initChain();
