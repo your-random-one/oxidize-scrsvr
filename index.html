@@ -241,12 +241,12 @@
             animation.onfinish = () => {
                 particle.remove();
                 
-                if ( (targetIndex == 1 or targetIndex == 4) ? (chainState[targetIndex] < 3) : (chainState[targetIndex] < 2) ) {
+                if ( (targetIndex == 1 || targetIndex == 4) ? (chainState[targetIndex] < 3) : (chainState[targetIndex] < 2) ) {
                     chainState[targetIndex]++;
                     totalAttacks++;
                     updateChainDisplay(targetIndex);
                 } else {
-                    if (chainState === '3223') {
+                    if (chainState.join('') === '3223') {
                         handleFragmentation(targetIndex);
                     }
                 }
