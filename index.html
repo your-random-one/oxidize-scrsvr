@@ -241,7 +241,7 @@
             animation.onfinish = () => {
                 particle.remove();
                 
-                if ( (targetIndex == 1 || targetIndex == 4) ? (chainState[targetIndex] < 3) : (chainState[targetIndex] < 2) ) {
+                if ( (targetIndex == 0 || targetIndex == 3) ? (chainState[targetIndex] < 3) : (chainState[targetIndex] < 2) ) {
                     chainState[targetIndex]++;
                     totalAttacks++;
                     updateChainDisplay(targetIndex);
