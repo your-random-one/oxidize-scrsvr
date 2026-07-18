@@ -278,14 +278,14 @@
                 } else if (!isTerminal && state < 2) {
                     validTargets.push(index);
                 }
-                if (validTargets.length === 0) {
-                    handleFragmentation(chainLength - 1);
-                } else {
-                    let randomIndex = validTargets[Math.floor(Math.random() * validTargets.length)];
-                    spawnOxygenAttack(randomIndex);
-                    break;
-                }
+             
             });
+            if (validTargets.length === 0) {
+                 handleFragmentation(chainLength - 1);
+            } else {
+                  let randomIndex = validTargets[Math.floor(Math.random() * validTargets.length)];
+                  spawnOxygenAttack(randomIndex);
+            }
         }
 
         initChain();
