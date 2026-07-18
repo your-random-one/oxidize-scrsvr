@@ -135,7 +135,7 @@
 </head>
 <body>
     <div id="hud">
-        <h1 id="compound-name">Butane</h1>
+        <h1 id="compound-name">Loading... Do you have JavaScript enabled?</h1>
         <p id="oxidation-status">Total Oxidative Attacks: 0</p>
     </div>
 
@@ -152,9 +152,13 @@
         function getCompoundName() {
             const code = chainState.join('');
             if (code === '000000') return 'Hexane';
-            if (code === '211111' || code === '111112') return "Aldo-Hexose";
+            if (code === '211111' || code === '111112') return 'Glucose';
+            if (code === '121111' || code === '111121') return 'Fructose';
+            if (code === '111111') return 'Sorbitol';
+            if (code === '311111' || code === '111113') return 'Gluconic Acid';
+            if (code === '311113') return 'Glucaric Acid';
             if (code === '300003') return 'Adipic Acid';
-            if (code === '322223') return 'Max Oxidation';
+            if (code === '322223') return 'Galactaric Acid (Max Oxidation)';
             if (code.includes('3')) return 'Partial Acid Derivative';
             if (code.includes('2')) return 'Oxo Derivative';
             if (code.includes('1')) return 'Alcohol Derivative';
