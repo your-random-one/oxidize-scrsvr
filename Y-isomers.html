@@ -35,7 +35,7 @@
         #hud h1 {
             font-size: 1.5rem;
             letter-spacing: 2px;
-            color: #94a3b8;
+            color: #aaaaaa;
             margin-bottom: 8px;
             text-transform: uppercase;
         }
@@ -164,6 +164,21 @@
             if (code.includes('1')) return 'Alcohol Derivative';
             return 'Modified Hexane Chain';
         }
+        function getCompoundColor() {
+            const code = chainState.join('');
+            if (code === '000000') return '#aaaaaa';
+            if (code === '211111' || code === '111112') return '#ffdf00';
+            if (code === '121111' || code === '111121') return 'ffdf00';
+            if (code === '111111') return '#7f7fff';
+            if (code === '311111' || code === '111113') return '#ff7f00';
+            if (code === '311113') return '#7f3fff';
+            if (code === '300003') return '#ffff7f';
+            if (code === '322223') return '#ff0000';
+            if (code.includes('3')) return '#ff0055';
+            if (code.includes('2')) return '#00d2ff';
+            if (code.includes('1')) return '#00ff88';
+            return '#3f003f';
+        }
 
         function initChain() {
             const container = document.getElementById('carbon-chain');
@@ -211,6 +226,7 @@
 
             document.getElementById('compound-name').innerText = getCompoundName();
             document.getElementById('oxidation-status').innerText = `Total Oxidative Attacks: ${totalAttacks}`;
+            document.getElementById('compound-name').color = getCompoundColor();
         }
 
         function spawnOxygenAttack(targetIndex) {
