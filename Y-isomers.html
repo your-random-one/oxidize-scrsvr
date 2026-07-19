@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oxidation Screensaver Release 1.0</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            background: #0a0a0f;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: #ffffff;
+            user-select: none;
+        }
+
+        #hud {
+            position: absolute;
+            top: 40px;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        #hud h1 {
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        #hud p {
+            font-size: 1rem;
+            color: #64748b;
+        }
+
+        #stage {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            width: 80%;
+            height: 50%;
+        }
+
+        #carbon-chain {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .cc-bond {
+            width: 60px;
+            height: 4px;
+            background: #2e384d;
+            transition: background 0.3s ease;
+        }
+
+        .carbon-node {
+            width: 32px;
+            height: 32px;
+            background: #576574;
+            border-radius: 50%;
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 15px rgba(71, 85, 105, 0.2);
+        }
+
+        .carbon-node.struck {
+            animation: flash 0.4s ease-out;
+        }
+
+        @keyframes flash {
+            0% { transform: scale(1.4); box-shadow: 0 0 30px #f59e0b; }
+            100% { transform: scale(1); }
+        }
+
+        .functional-group {
+            position: absolute;
+            bottom: 45px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 24px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0;
+            transform: translateX(-50%) translateY(10px) scale(0.5);
+        }
+
+        .functional-group.visible {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0) scale(1);
+        }
+
+        .carbon-node.hydroxyl { background: #00ff88; box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
+        .carbon-node.hydroxyl .functional-group {
+            background: #00ff88;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+
+        .carbon-node.carbonyl { background: #00d2ff; box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
+        .carbon-node.carbonyl .functional-group {
+            background: #00d2ff;
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+        }
+
+        .carbon-node.acid { background: #ff0055; box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
+        .carbon-node.acid .functional-group {
+            background: #ff0055;
+            border-radius: 50%;
+        }
+
+        .oxygen-particle {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #f59e0b;
+            border-radius: 50%;
+            box-shadow: 0 0 15px #f59e0b;
+            pointer-events: none;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div id="hud">
+        <h1 id="compound-name">Loading... Do you have JavaScript enabled?</h1>
+        <p id="oxidation-status">Total Oxidative Attacks: 0</p>
+    </div>
+
+    <div id="stage">
+        <div id="carbon-chain"></div>
+    </div>
+
+    <script>
+        const chainLength = 6; 
+        let chainState = Array(chainLength).fill(0);
+        let totalAttacks = 0;
+        const classes = ['reduced', 'hydroxyl', 'carbonyl', 'acid'];
+
+        function getCompoundName() {
+            const code = chainState.join('');
+            if (code === '000000') return 'Hexane';
+            if (code === '211111' || code === '111112') return 'Glucose';
+            if (code === '121111' || code === '111121') return 'Fructose';
+            if (code === '111111') return 'Sorbitol';
+            if (code === '311111' || code === '111113') return 'Gluconic Acid';
+            if (code === '311113') return 'Glucaric Acid';
+            if (code === '300003') return 'Adipic Acid';
+            if (code === '322223') return 'Galactaric Acid (Max Oxidation)';
+            if (code.includes('3')) return 'Partial Acid Derivative';
+            if (code.includes('2')) return 'Oxo Derivative';
+            if (code.includes('1')) return 'Alcohol Derivative';
+            return 'Modified Hexane Chain';
+        }
+
+        function initChain() {
+            const container = document.getElementById('carbon-chain');
+            container.innerHTML = ''; 
+
+            chainState.forEach((stateCount, index) => {
+                const node = document.createElement('div');
+                node.id = `node-${index}`;
+                node.className = `carbon-node ${classes[stateCount]}`;
+                
+                const polygon = document.createElement('div');
+                polygon.className = 'functional-group';
+                node.appendChild(polygon);
+                
+                container.appendChild(node);
+
+                if (index < chainLength - 1) {
+                    const bond = document.createElement('div');
+                    bond.className = 'cc-bond';
+                    bond.id = `bond-${index}`;
+                    container.appendChild(bond);
+                }
+            });
+        }
+
+        function updateChainDisplay(struckIndex) {
+            chainState.forEach((stateCount, index) => {
+                const node = document.getElementById(`node-${index}`);
+                classes.forEach(c => node.classList.remove(c));
+                node.classList.add(classes[stateCount]);
+                
+                const polygon = node.querySelector('.functional-group');
+                if (stateCount > 0) {
+                    polygon.classList.add('visible');
+                } else {
+                    polygon.classList.remove('visible');
+                }
+
+                if (index === struckIndex) {
+                    node.classList.remove('struck');
+                    void node.offsetWidth; 
+                    node.classList.add('struck');
+                }
+            });
+
+            document.getElementById('compound-name').innerText = getCompoundName();
+            document.getElementById('oxidation-status').innerText = `Total Oxidative Attacks: ${totalAttacks}`;
+        }
+
+        function spawnOxygenAttack(targetIndex) {
+            const stage = document.getElementById('stage');
+            const targetNode = document.getElementById(`node-${targetIndex}`);
+            
+            const stageRect = stage.getBoundingClientRect();
+            const nodeRect = targetNode.getBoundingClientRect();
+            
+            const targetX = nodeRect.left - stageRect.left + (nodeRect.width / 2);
+            const targetY = nodeRect.top - stageRect.top + (nodeRect.height / 2);
+
+            const particle = document.createElement('div');
+            particle.className = 'oxygen-particle';
+            
+            const angle = Math.random() * Math.PI * 2;
+            const radius = Math.max(stageRect.width, stageRect.height);
+            const startX = targetX + Math.cos(angle) * radius;
+            const startY = targetY + Math.sin(angle) * radius;
+
+            particle.style.left = `${startX}px`;
+            particle.style.top = `${startY}px`;
+            stage.appendChild(particle);
+
+            const animation = particle.animate([
+                { left: `${startX}px`, top: `${startY}px` },
+                { left: `${targetX}px`, top: `${targetY}px` }
+            ], {
+                duration: 600,
+                easing: 'ease-in-out'
+            });
+
+            animation.onfinish = () => {
+                particle.remove();
+                
+                if ( (targetIndex == 0 || targetIndex == chainLength - 1) ? (chainState[targetIndex] < 3) : (chainState[targetIndex] < 2) ) {
+                    chainState[targetIndex]++;
+                    totalAttacks++;
+                    updateChainDisplay(targetIndex);
+                } else {
+                    if (chainState.join('') === '322223') {
+                        handleFragmentation(targetIndex);
+                    }
+                }
+            };
+        }
+
+        function handleFragmentation(index) {
+            const targetNode = document.getElementById(`node-${index}`);
+            
+            targetNode.animate([
+                { transform: 'scale(1)', background: '#ef4444' },
+                { transform: 'scale(2)', background: '#ffffff', filter: 'blur(4px)' },
+                { transform: 'scale(0)', opacity: 0 }
+            ], { duration: 500, easing: 'ease-out' }).onfinish = () => {
+                chainState = Array(chainLength).fill(0);
+                totalAttacks = 0;
+                initChain();
+                updateChainDisplay(-1);
+            };
+        }
+
+        function simulationStep() {
+            let validTargets = [];
+            chainState.forEach((state,index)=> {
+                isTerminal = (index === 0 || index === chainLength-1);
+                if (isTerminal && state < 3) {
+                    validTargets.push(index);
+                } else if (!isTerminal && state < 2) {
+                    validTargets.push(index);
+                }
+             
+            });
+            if (validTargets.length === 0) {
+                 handleFragmentation(chainLength - 1);
+            } else {
+                  let randomIndex = validTargets[Math.floor(Math.random() * validTargets.length)];
+                  spawnOxygenAttack(randomIndex);
+            }
+        }
+
+        initChain();
+        updateChainDisplay(-1);
+        setInterval(simulationStep, 2500);
+    </script>
+</body>
+</html>
