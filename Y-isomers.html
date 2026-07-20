@@ -168,7 +168,7 @@
             const code = chainState.join('');
             if (code === '000000') return '#aaaaaa';
             if (code === '211111' || code === '111112') return '#ffdf00';
-            if (code === '121111' || code === '111121') return 'ffdf00';
+            if (code === '121111' || code === '111121') return '#ffdf00';
             if (code === '111111') return '#7f7fff';
             if (code === '311111' || code === '111113') return '#ff7f00';
             if (code === '311113') return '#7f3fff';
@@ -301,7 +301,7 @@
              
             });
             if (validTargets.length === 0) {
-                 handleFragmentation(chainLength - 1);
+                 spawnOxygenAttack(chainLength - 1); // function automatically handles frag
             } else {
                   let randomIndex = validTargets[Math.floor(Math.random() * validTargets.length)];
                   spawnOxygenAttack(randomIndex);
